@@ -1,0 +1,22 @@
+settings
+  disable automatic piston state
+end settings;
+
+define
+  device devicesToCheck = Outlet 1;
+  devices Not Responding;
+  string message;
+end define
+
+execute
+  every hour, at :01 past the hour
+  do
+    if
+      {devicesToCheck}'s $status is 'OFFLINE'
+        x2 save matching devices to {devicesNotResponding}
+    then 
+      Send SMS notification "Garage Freezer MAY have lost power" to [phone number] and store in Messages;
+      Send PUSH notification "Garage Freezer MAY have lost power" and store in Messages;
+    end if;
+  end every;
+end execute;
